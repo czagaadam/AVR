@@ -1,9 +1,4 @@
-/*
- * GPIObase.cpp
- *
- * Created: 2024. 04. 25. 12:08:12
- * Author : AMD_FX_X8
- */ 
+
 
 #include "GPIObase.h"
 #include "ISRbase.h"
@@ -67,30 +62,6 @@ void GPIObase::PullDown(void)
 uint8_t GPIObase::get_pin(void){
 	return _PIN;
 }
-/*
-DinStorage::DinStorage() : dinCount(0) {
-		// Konstruktor inicializáció
-	}
-void DinStorage::add(const Din& din) {
-	if (dinCount < MAX_DIN_COUNT) {
-		dinArray[dinCount++] = din;
-		} else {
-	}
-}
-Din DinStorage::get(int index) {
-	if (index >= 0 && index < dinCount) {
-		return dinArray[index];
-		} else {
-		return Din();
-	}
-}
-void DinStorage::remove(const Din& din) {
-	if (dinCount < MAX_DIN_COUNT) {
-		dinArray[dinCount++] = din;
-		} else {
-	}
-}
-*/
 Din::Din(){}
 Din::~Din(){Din::ISR_LIST.remove(this);}
 Din::Din(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
@@ -108,14 +79,38 @@ Din::Din(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 		DDRD &= ~(1 << _PIN);
 	}*/
 	*_DDR &= ~(1 << _PIN);
-	Din::ISR_LIST.add(this);
+	
+	/*char buffer[10];
+	itoa(PIN,buffer,10);
+	USART0SendString("PIN: ");
+	USART0SendString(buffer);
+	USART0SendString("\r\n");*/
 }
 void Din::set_isr_cb(gpio_isr_cb cb)
 {
+	//USART0SendString("set");
 	_cb = cb;	//store (callback) function pointer
-}
+	Din::ISR_LIST.add(this);	// IT IS STORING JUST A COPY!!!!!!!!
+	/*
+	char buffer2[10];
+	sprintf(buffer2, "%p",  (void*)this->_cb);
+	USART0SendString(buffer2);
+	*/	
+	}
 void Din::call_isr(void)
 {
+	/*
+	USART0SendString("call");		
+	char buffer2[10];
+	sprintf(buffer2, "%p",  (void*)this->_cb);
+	USART0SendString(buffer2);			
+	//char buffer[10];
+	//itoa(PIN,buffer,10);
+	USART0SendString("Name: ");
+	strcpy(name,buffer2);
+	USART0SendString(name);
+	USART0SendString("\r\n");			
+*/
 	//if(_cb == null)return;
 	_cb();
 }
@@ -126,7 +121,22 @@ void Din::trigger_pin(uint8_t gpio_pin)
 		uint8_t pin = Din::ISR_LIST.get(i)->get_pin();
 		if(pin == gpio_pin)
 		{
-			Din::ISR_LIST.get(i)->call_isr();
+				/*
+				char buffer[10];
+				itoa(gpio_pin,buffer,10);
+				USART0SendString("TRIGGER PIN: ");
+				USART0SendString(buffer);
+				USART0SendString("\r\n");	
+				
+				char buffer2[10];
+				sprintf(buffer2, "%p",  (void*)Din::ISR_LIST.get(i)->_cb);
+				//char buffer[10];
+				//itoa(PIN,buffer,10);
+				USART0SendString("Name: ");
+				USART0SendString(Din::ISR_LIST.get(i)->name);
+				USART0SendString("\r\n");				
+				*/						
+			Din::ISR_LIST.get(i)->call_isr();		
 		}
 	}
 }
@@ -135,18 +145,6 @@ Dout::Dout(){}
 Dout::~Dout(){}
 Dout::Dout(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 {
-	/*if(*_PORT == PORTB)
-	{
-		DDRB |= (1 << PIN);
-	}
-	if(*_PORT == PORTC)
-	{
-		DDRC |= (1 << PIN);
-	}
-	if(*_PORT == PORTD)
-	{
-		DDRD |= (1 << PIN);
-	}*/
 	*_DDR |= (1 << PIN);
 }
 void Dout::toggle(void){
@@ -160,24 +158,3 @@ void Dout::clear(void)
 {
 	*_PORT &= ~(1 << _PIN);
 }
-
-
-
-
-
-/*
-vector::vector(void)  	{
-	_SIZE = 24;
-	index = 0;
-	//list = (Din*)malloc(_SIZE * sizeof(Din));
-	//list = new Din[_SIZE];
-}
-vector::~vector(void)	{}
-void vector::clear(void)	{}
-void add(Din din) {
-	vector::list[vector::index++] = din;
-	
-}
-void vector::remove(void)	{}
-void vector::get(void)	{}
-uint8_t vector::size(void)	{ return index;}*/
