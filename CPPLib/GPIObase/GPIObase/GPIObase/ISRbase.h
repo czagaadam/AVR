@@ -13,41 +13,42 @@
 template<class T>
 class ISRbase
 {
-	public:
-	static const uint8_t MAX_DIN_COUNT = 24;
-	//uint8_t MAX_DIN_COUNT; // Maximum Din elemek száma
-	T Storage[MAX_DIN_COUNT]; // A hagyományos tömb, amiben tároljuk a Din elemeket
-	uint8_t Count;	
+	public:	
 	ISRbase(void)  	{Count = 0;}
 	~ISRbase(void)	{}
 	//void add(T& obj)
-	void add(T* obj)
+	//void add(T* obj)
+	//void add(T* &obj)
+	void add(T * const & obj)
 	{
-		if (Count < MAX_DIN_COUNT) {
-			Storage[Count++] = *obj;
-			} else {
-		}
+		if (Count < MAX_DIN_COUNT) Storage[Count++] = obj;
+		//if (Count < MAX_DIN_COUNT) Storage[Count++] = *obj;
+		//#todo: else
 	}
 	//void remove(T& obj)
 	void remove(T* obj)
 	{
-		
+		//#todo: 
 	}
 	T* get(uint8_t index)
 	{
-		//if (index >= 0 && index < Count) {
-			return &Storage[index];
-			/*} else {
-			return Din();
-		}*/
+		//if (index >= 0 && index < Count)	return &Storage[index];
+		if (index >= 0 && index < Count)	return Storage[index];
+		//#todo: else
 	}
-	uint8_t size(void)
+	uint8_t get_size(void)
 	{
 		return MAX_DIN_COUNT;
 	}
+	uint8_t get_count(void)
+	{
+		return Count;
+	}	
 
 	private:
-	//std::vector<T*> ISR_LIST;
+	uint8_t Count;
+	static const uint8_t MAX_DIN_COUNT = 24;
+	T* Storage[MAX_DIN_COUNT];
 };
 
 

@@ -44,11 +44,9 @@ void USART0SendString(char* sData)
 	}
 }
 
-/** Sending integer 
+/** Sending integer via COM port
 *
-*
-* @param name component of interest
-* @param verbosity desired trace verbosity
+* @param iData input number
 */
 void USART0SendInt(uint16_t iData)
 {
@@ -56,9 +54,15 @@ void USART0SendInt(uint16_t iData)
 	itoa(iData,buffer,10);
 	USART0SendString("USART0SendInt2: ");
 	USART0SendString(buffer);
-	USART0SendString("\r\n");	
+	USART0SendString("\r\n");
+	memset(buffer, 0, sizeof buffer);	
 }
 
+/** Sending integer via COM port
+*
+* @param iData input number
+* @param buffer reference for future use of transfered data
+*/
 void USART0SendInt(uint16_t iData, char* &buffer)
 {
 	itoa(iData,buffer,10);
@@ -74,6 +78,7 @@ void USART0SendIntWithText(uint16_t iData, char Text[])
 	USART0SendString(Text);
 	USART0SendString(buffer);
 	USART0SendString("\r\n");
+	memset(buffer, 0, sizeof buffer);
 }
 
 void USART0SendIntWithText(uint16_t iData, char* &buffer, char Text[])
