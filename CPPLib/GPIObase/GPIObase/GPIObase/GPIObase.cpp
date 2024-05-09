@@ -29,7 +29,7 @@ GPIObase::GPIObase(volatile uint8_t* PORT, uint8_t PIN)
 GPIObase::~GPIObase(){}	
 uint8_t GPIObase::read(void)	
 {
-	
+	//#todo:
 	//if(!(PINB & (1 << PORTB0))) return 0; else return 1;
 	
 	//if ( ( ( (*_PINgroup) & ( 1 << _PIN ) ) >> _PIN ) == 0 ) return 0;  else return 1;
@@ -66,76 +66,24 @@ Din::Din(){}
 Din::~Din(){Din::ISR_LIST.remove(this);}
 Din::Din(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 {
-	/*if(*_PORT == PORTB)
-	{
-		DDRB &= ~(1 << _PIN);
-	}
-	if(*_PORT == PORTC)
-	{
-		DDRC &= ~(1 << _PIN);
-	}
-	if(*_PORT == PORTD)
-	{
-		DDRD &= ~(1 << _PIN);
-	}*/
 	*_DDR &= ~(1 << _PIN);
-	
-	/*char buffer[10];
-	itoa(PIN,buffer,10);
-	USART0SendString("PIN: ");
-	USART0SendString(buffer);
-	USART0SendString("\r\n");*/
 }
 void Din::set_isr_cb(gpio_isr_cb cb)
 {
-	//USART0SendString("set");
 	_cb = cb;	//store (callback) function pointer
-	Din::ISR_LIST.add(this);	// IT IS STORING JUST A COPY!!!!!!!!
-	/*
-	char buffer2[10];
-	sprintf(buffer2, "%p",  (void*)this->_cb);
-	USART0SendString(buffer2);
-	*/	
+	Din::ISR_LIST.add(this);	
 	}
 void Din::call_isr(void)
 {
-	/*
-	USART0SendString("call");		
-	char buffer2[10];
-	sprintf(buffer2, "%p",  (void*)this->_cb);
-	USART0SendString(buffer2);			
-	//char buffer[10];
-	//itoa(PIN,buffer,10);
-	USART0SendString("Name: ");
-	strcpy(name,buffer2);
-	USART0SendString(name);
-	USART0SendString("\r\n");			
-*/
-	//if(_cb == null)return;
 	_cb();
 }
 void Din::trigger_pin(uint8_t gpio_pin)
 {
-	for(uint8_t i = 0; i < /*Din::ISR_LIST.size()*/2; i++)
+	for(uint8_t i = 0; i < Din::ISR_LIST.get_size(); i++)
 	{
 		uint8_t pin = Din::ISR_LIST.get(i)->get_pin();
 		if(pin == gpio_pin)
-		{
-				/*
-				char buffer[10];
-				itoa(gpio_pin,buffer,10);
-				USART0SendString("TRIGGER PIN: ");
-				USART0SendString(buffer);
-				USART0SendString("\r\n");	
-				
-				char buffer2[10];
-				sprintf(buffer2, "%p",  (void*)Din::ISR_LIST.get(i)->_cb);
-				//char buffer[10];
-				//itoa(PIN,buffer,10);
-				USART0SendString("Name: ");
-				USART0SendString(Din::ISR_LIST.get(i)->name);
-				USART0SendString("\r\n");				
-				*/						
+		{					
 			Din::ISR_LIST.get(i)->call_isr();		
 		}
 	}

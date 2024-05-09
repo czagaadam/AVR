@@ -9,6 +9,33 @@
 #ifndef UARTBASE_H_
 #define UARTBASE_H_
 
+typedef enum UART_TypeDef
+{
+	USART0 = 0,
+	USART1,
+	USART2
+}UART_TypeDef;
+
+class UARTbase
+{
+	public:
+	UARTbase(UART_TypeDef PORT);
+	~UARTbase();
+	void Init(void);
+	void SendByte(uint8_t u8Data);
+	void SendString(char* sData);
+	void SendInt(uint16_t iData);
+	void SendInt(uint16_t iData, char* &buffer);
+	void SendIntWithText(uint16_t iData, char Text[]);
+	void SendIntWithText(uint16_t iData, char* &buffer, char Text[]);
+	uint8_t ReceiveByte();
+	void _Interrupt_Init(void);	
+	protected:
+	
+	private:
+	UART_TypeDef _PORT;
+};
+
 
 void USART0Init(void);
 
