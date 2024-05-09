@@ -10,23 +10,33 @@ GPIObase::GPIObase(volatile uint8_t* PORT, uint8_t PIN)
 {
 	_PIN = PIN;
 	_PORT = PORT;
-	if(*_PORT == PORTB)
+	GPIObase::init();
+}
+GPIObase::~GPIObase(){
+	//#todo:
+}	
+void GPIObase::init()
+{
+	if(!isInit)
 	{
-		_DDR = &DDRB;
-		_PINgroup = &PINB;
-	}
-	if(*_PORT == PORTC)
-	{
-		_DDR = &DDRC;
-		_PINgroup = &PINC;
-	}
-	if(*_PORT == PORTD)
-	{
-		_DDR = &DDRD;
-		_PINgroup = &PIND;
+		if(*_PORT == PORTB)
+		{
+			_DDR = &DDRB;
+			_PINgroup = &PINB;
+		}
+		if(*_PORT == PORTC)
+		{
+			_DDR = &DDRC;
+			_PINgroup = &PINC;
+		}
+		if(*_PORT == PORTD)
+		{
+			_DDR = &DDRD;
+			_PINgroup = &PIND;
+		}
+		isInit = true;
 	}
 }
-GPIObase::~GPIObase(){}	
 uint8_t GPIObase::read(void)	
 {
 	//#todo:
@@ -51,11 +61,11 @@ uint8_t GPIObase::read(void)
 	if (((*_PORT) & (1 << _PIN) >> _PIN) == 0){ return 0;}
 	else {return 1;}*/
 }	
-void GPIObase::PullUp(void)
+void GPIObase::pull_up(void)
 {
 	*_PORT |= (1 << _PIN);
 }
-void GPIObase::PullDown(void)
+void GPIObase::pull_down(void)
 {
 	*_PORT &= ~(1 << _PIN);
 }
@@ -90,7 +100,9 @@ void Din::trigger_pin(uint8_t gpio_pin)
 }
 
 Dout::Dout(){}
-Dout::~Dout(){}
+Dout::~Dout(){
+	//#todo:
+}
 Dout::Dout(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 {
 	*_DDR |= (1 << PIN);

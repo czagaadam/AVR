@@ -16,7 +16,9 @@ class ISRbase
 {
 	public:	
 	ISRbase(void)  	{Count = 0;}
-	~ISRbase(void)	{}
+	~ISRbase(void)	{
+		//#todo:
+	}
 	void add(T * const & obj)
 	{
 		if (Count < MAX_DIN_COUNT) Storage[Count++] = obj;

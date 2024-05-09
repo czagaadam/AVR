@@ -20,9 +20,10 @@ class GPIObase
 {
 	public:
 	uint8_t read(void);
-	void PullUp(void);
-	void PullDown(void);	
+	void pull_up(void);
+	void pull_down(void);	
 	uint8_t get_pin(void);
+	void init(void);
 	protected:
 	GPIObase();
 	GPIObase(volatile uint8_t* PORT, uint8_t PIN);
@@ -31,6 +32,7 @@ class GPIObase
 	volatile uint8_t* _PORT;
 	volatile uint8_t* _DDR;
 	volatile uint8_t* _PINgroup;
+	bool isInit;
 	private:
 };
 
