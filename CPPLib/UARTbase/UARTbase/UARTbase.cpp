@@ -13,6 +13,8 @@
 
 #include "UARTbase.h"
 
+ISRbase<UARTbase> ISR_LIST;
+
 UARTbase::UARTbase(){}
 
 UARTbase::UARTbase(UART_TypeDef PORT)
@@ -26,7 +28,7 @@ UARTbase::~UARTbase(){
 
 void UARTbase::init(void)
 {
-	if(_PORT == USART0)
+	if(_PORT == UART0)
 	{
 		// Set baud rate
 		//high 8 bit
@@ -44,7 +46,7 @@ void UARTbase::init(void)
 
 void UARTbase::send_byte(uint8_t u8Data)
 {
-	if(_PORT == USART0)
+	if(_PORT == UART0)
 	{
 		//wait while previous byte is completed
 		//checking transmission buffer empty flag UDRE0 in UCSR0A register
@@ -113,8 +115,9 @@ void UARTbase::send_float(float data)
 {
 	char buffer[10] = "";
 	char floatbuffer[10] ="";
-	dtostrf( data, 2, 2, floatbuffer );		//float to string
-	//sprintf (buffer, "ADC: %4sV\r\n", floatbuffer);
+	dtostrf( data, 2, 2, floatbuffer );				//float to string
+	//#todo: add text and length 
+	sprintf (buffer, "ADC: %4sV\r\n", floatbuffer);
 	UARTbase::send_string(buffer);
 	memset(floatbuffer, 0, sizeof floatbuffer);
 	memset(buffer, 0, sizeof buffer);
@@ -123,7 +126,7 @@ void UARTbase::send_float(float data)
 
 uint8_t UARTbase::receive_byte()
 {
-	if(_PORT == USART0)
+	if(_PORT == UART0)
 	{
 		// Wait for byte to be received
 		while(!(UCSR0A&(1<<RXC0))){};
@@ -138,7 +141,7 @@ uint8_t UARTbase::receive_byte()
 
 void UARTbase::interrupt_init(void)
 {
-	if(_PORT == USART0)
+	if(_PORT == UART0)
 	{
 		cli();
 		UCSR0B = ((1<<RXEN0)|(1<<TXEN0)|(1 << RXCIE0));       // Enable receiver and transmitter and Rx interrupt
@@ -146,6 +149,9 @@ void UARTbase::interrupt_init(void)
 	}
 }
 
+static void trigger_port(UART_TypeDef PORT){}
+void set_isr_cb(uart_isr_cb cb){}
+void call_isr(void){}
 
 
 

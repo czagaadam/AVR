@@ -8,13 +8,17 @@
 
 #ifndef UARTBASE_H_
 #define UARTBASE_H_
+#include "GPIObase/GPIObase/GPIObase/ISRbase.h"
 
 typedef enum UART_TypeDef
 {
-	USART0 = 0,
-	USART1,
-	USART2
+	UART0 = 0,
+	UART1,
+	UART2
 }UART_TypeDef;
+
+//function pointer for callbacks
+typedef void(*uart_isr_cb)(void);
 
 class UARTbase
 {
@@ -33,7 +37,12 @@ class UARTbase
 	void send_float(float data);
 	uint8_t receive_byte();
 	void interrupt_init(void);	
+	static void trigger_port(UART_TypeDef PORT);	//find UART object in storage by UART_TypeDef and call call_isr method of that object
+	void set_isr_cb(uart_isr_cb cb);				//set function pointer
+	void call_isr(void);							//call call back function pointed by function pointer
+	uart_isr_cb _cb;								//function pointer
 	protected:
+	static ISRbase<UARTbase> ISR_LIST;				//storage for UART objects
 	
 	private:
 	UART_TypeDef _PORT;

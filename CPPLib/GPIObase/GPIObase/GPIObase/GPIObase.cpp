@@ -37,7 +37,7 @@ void GPIObase::init()
 		isInit = true;
 	}
 }
-uint8_t GPIObase::read(void)	
+GPIO_PinState GPIObase::read(void)	
 {
 	//#todo:
 	//if(!(PINB & (1 << PORTB0))) return 0; else return 1;
@@ -47,7 +47,7 @@ uint8_t GPIObase::read(void)
 	
 	if(*_PORT == PORTB)
 	{
-		if ( ( ( (PINB) & ( 1 << _PIN ) ) >> _PIN ) == 0 ) return 0;  else return 1;
+		if ( ( ( (PINB) & ( 1 << _PIN ) ) >> _PIN ) == 0 ) return GPIO_PIN_RESET;  else return GPIO_PIN_SET;
 	}
 	/*if(*_PORT == PORTC)
 	{
@@ -77,12 +77,27 @@ Din::~Din(){Din::ISR_LIST.remove(this);}
 Din::Din(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 {
 	*_DDR &= ~(1 << _PIN);
+	//#todo: defult PUPD???
 }
+Din::Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state) : GPIObase(PORT, PIN)
+{
+	*_DDR &= ~(1 << _PIN);
+	if (state == GPIO_PIN_SET)	GPIObase::pull_up();
+	else GPIObase::pull_down();	
+}
+Din::Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state, gpio_isr_cb cb) : GPIObase(PORT, PIN)
+{
+	*_DDR &= ~(1 << _PIN);
+	if (state == GPIO_PIN_SET)	GPIObase::pull_up();
+	else GPIObase::pull_down();
+	Din::set_isr_cb(cb);
+}
+
 void Din::set_isr_cb(gpio_isr_cb cb)
 {
 	_cb = cb;	//store (callback) function pointer
 	Din::ISR_LIST.add(this);	
-	}
+}
 void Din::call_isr(void)
 {
 	_cb();
@@ -106,10 +121,23 @@ Dout::~Dout(){
 Dout::Dout(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 {
 	*_DDR |= (1 << PIN);
+	Dout::write(GPIO_PIN_RESET);
+}
+Dout::Dout(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state) : GPIObase(PORT, PIN)
+{
+	*_DDR |= (1 << PIN);
+	Dout::write(state);
 }
 void Dout::toggle(void){
 	*_PORT ^= (1 << _PIN);
 }
+
+void Dout::write(GPIO_PinState state)
+{
+	if (state == GPIO_PIN_SET)	GPIObase::pull_up();
+	else GPIObase::pull_down();
+}
+/*
 void Dout::set(void)
 {
 	*_PORT |= (1 << _PIN);
@@ -118,3 +146,4 @@ void Dout::clear(void)
 {
 	*_PORT &= ~(1 << _PIN);
 }
+*/

@@ -11,9 +11,19 @@
 
 #include "GPIObase.h"
 
+typedef enum SPI_TypeDef
+{
+	SPI0 = 0,
+	SPI1,
+	SPI2
+}SPI_TypeDef;
+
 class SPIbase
 {
 	public:
+	SPIbase(SPI_TypeDef PORT, GPIObase CS);
+	SPIbase(GPIObase CS,GPIObase MOSI,GPIObase MISO,GPIObase SCK);
+	~SPIbase(void);
 	void SPI_CS_enable (uint8_t SPI_PORT);
 	uint8_t SPI_CS_enable (void);
 	uint8_t SPI_CS_disable (void);
