@@ -8,3 +8,6 @@ https://www.youtube.com/@BinderTronics
 I have written lot's of code during the years in C with Microchip Studio(Atmel Studio) IDE but I was always curious, 
 can I implement the same library structure in C++, and can I simply write lines like Button1.read()... I hope so.
 I'm familier with other OOP languges and OOP principle but not with C++, so implementing and sharing this is also a self learning activities.
+
+New examples uploaded! How to use GPIO and UART libraries:
+https://github.com/czagaadam/AVR/blob/main/CPPLib/GPIObase/CPP_Test/CPP_Test/CPP_Test/main.cpp
