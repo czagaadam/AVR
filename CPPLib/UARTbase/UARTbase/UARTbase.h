@@ -25,6 +25,7 @@ class UARTbase
 	public:
 	UARTbase();
 	UARTbase(UART_TypeDef PORT);
+	UARTbase(UART_TypeDef PORT, uart_isr_cb cb);
 	~UARTbase();
 	void init(void);
 	void send_byte(uint8_t u8Data);
@@ -36,11 +37,12 @@ class UARTbase
 	void send_int_with_text(uint16_t iData, char* &buffer, char Text[]);
 	void send_float(float data);
 	uint8_t receive_byte();
-	void interrupt_init(void);	
+	void enable_interrupt(void);	
 	static void trigger_port(UART_TypeDef PORT);	//find UART object in storage by UART_TypeDef and call call_isr method of that object
 	void set_isr_cb(uart_isr_cb cb);				//set function pointer
 	void call_isr(void);							//call call back function pointed by function pointer
 	uart_isr_cb _cb;								//function pointer
+	UART_TypeDef get_port();
 	protected:
 	static ISRbase<UARTbase> ISR_LIST;				//storage for UART objects
 	

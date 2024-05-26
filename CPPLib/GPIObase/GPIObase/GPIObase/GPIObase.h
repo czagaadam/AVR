@@ -8,7 +8,6 @@
  */ 
 
 
-
 #ifndef GPIOBASE_H_
 #define GPIOBASE_H_
 #include <avr/io.h>
@@ -19,6 +18,12 @@ typedef enum GPIO_PinState
 	GPIO_PIN_RESET = 0,
 	GPIO_PIN_SET
 }GPIO_PinState;
+
+typedef enum GPIO_Pull
+{
+	GPIO_PULL_DOWN = 0,
+	GPIO_PULL_UP
+}GPIO_Pull;
 
 //function pointer for callbacks
 typedef void(*gpio_isr_cb)(void);
@@ -32,15 +37,14 @@ class GPIObase
 	void pull_down(void);	
 	uint8_t get_pin(void);
 	void init(void);
-	protected:
 	GPIObase();
 	GPIObase(volatile uint8_t* PORT, uint8_t PIN);
-	~GPIObase();	
+	~GPIObase();
+	protected:
 	uint8_t _PIN;
 	volatile uint8_t* _PORT;
 	volatile uint8_t* _DDR;
 	volatile uint8_t* _PINgroup;
-	bool isInit;
 	private:
 };
 
@@ -49,8 +53,8 @@ class Din : public GPIObase
 	public:
 	Din();
 	Din(volatile uint8_t* PORT, uint8_t PIN);
-	Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState);
-	Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState, gpio_isr_cb cb);
+	Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_Pull pull);
+	Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_Pull pull, gpio_isr_cb cb);
 	~Din();	
 	static void trigger_pin(uint8_t PIN);	//find Din object in storage by pin number and call call_isr method of that object
 	void set_isr_cb(gpio_isr_cb cb);		//set function pointer
@@ -66,7 +70,7 @@ class Dout : public GPIObase
 	public:
 	Dout();
 	Dout(volatile uint8_t* PORT, uint8_t PIN);
-	Dout(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState);
+	Dout(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state);
 	~Dout();
 	//void set(void);
 	//void clear(void);

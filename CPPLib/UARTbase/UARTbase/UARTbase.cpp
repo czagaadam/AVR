@@ -8,18 +8,26 @@
 #include <stdint.h>       // needed for uint8_t
 #include <stdio.h>
 #include <string.h>
+#include "UARTbase.h"
+//#todo: fix include issue, now it is a hard copy
+#include "GPIObase/GPIObase/GPIObase/ISRbase.h"
 #define USART_BAUDRATE 9600
 #define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
-#include "UARTbase.h"
-
-ISRbase<UARTbase> ISR_LIST;
+ISRbase<UARTbase> UARTbase::ISR_LIST;
 
 UARTbase::UARTbase(){}
 
 UARTbase::UARTbase(UART_TypeDef PORT)
 {
 	_PORT = PORT;
+}
+
+UARTbase::UARTbase(UART_TypeDef PORT, uart_isr_cb cb)
+{
+	_PORT = PORT;
+	UARTbase::enable_interrupt();
+	UARTbase::set_isr_cb(cb);
 }
 
 UARTbase::~UARTbase(){
@@ -42,6 +50,7 @@ void UARTbase::init(void)
 		//enable transmission and reception
 		UCSR0B |= (1<<RXEN0)|(1<<TXEN0);
 	}
+	//#todo:
 }
 
 void UARTbase::send_byte(uint8_t u8Data)
@@ -55,6 +64,7 @@ void UARTbase::send_byte(uint8_t u8Data)
 		//UDR0 in USART0 module which is used to send and receive data
 		UDR0 = u8Data;
 	}
+	//#todo:
 }
 
 void UARTbase::new_line()
@@ -137,21 +147,47 @@ uint8_t UARTbase::receive_byte()
 	{
 		return 0;
 	}
+	//#todo:
 }
 
-void UARTbase::interrupt_init(void)
+void UARTbase::enable_interrupt(void)
 {
 	if(_PORT == UART0)
 	{
 		cli();
-		UCSR0B = ((1<<RXEN0)|(1<<TXEN0)|(1 << RXCIE0));       // Enable receiver and transmitter and Rx interrupt
+		//UCSR0B = ((1<<RXEN0)|(1<<TXEN0)|(1 << RXCIE0));       // Enable receiver and transmitter and Rx interrupt
+		UCSR0B |= ((1 << RXCIE0));       // Rx interrupt
 		sei();
 	}
+	//#todo:
 }
 
-static void trigger_port(UART_TypeDef PORT){}
-void set_isr_cb(uart_isr_cb cb){}
-void call_isr(void){}
+UART_TypeDef UARTbase::get_port()
+{
+	return _PORT;
+}
+
+void UARTbase::trigger_port(UART_TypeDef PORT)
+{
+	for(uint8_t i = 0; i < UARTbase::ISR_LIST.get_size(); i++)
+	{
+		UART_TypeDef port = UARTbase::ISR_LIST.get(i)->get_port();
+		if(port == PORT)
+		{
+			UARTbase::ISR_LIST.get(i)->call_isr();
+		}
+	}	
+}
+
+void UARTbase::set_isr_cb(uart_isr_cb cb)
+{
+	_cb = cb;	//store (callback) function pointer
+	UARTbase::ISR_LIST.add(this);
+}
+void UARTbase::call_isr(void)
+{
+	_cb();
+}
 
 
 

@@ -17,24 +17,20 @@ GPIObase::~GPIObase(){
 }	
 void GPIObase::init()
 {
-	if(!isInit)
+	if(*_PORT == PORTB)
 	{
-		if(*_PORT == PORTB)
-		{
-			_DDR = &DDRB;
-			_PINgroup = &PINB;
-		}
-		if(*_PORT == PORTC)
-		{
-			_DDR = &DDRC;
-			_PINgroup = &PINC;
-		}
-		if(*_PORT == PORTD)
-		{
-			_DDR = &DDRD;
-			_PINgroup = &PIND;
-		}
-		isInit = true;
+		_DDR = &DDRB;
+		_PINgroup = &PINB;
+	}
+	if(*_PORT == PORTC)
+	{
+		_DDR = &DDRC;
+		_PINgroup = &PINC;
+	}
+	if(*_PORT == PORTD)
+	{
+		_DDR = &DDRD;
+		_PINgroup = &PIND;
 	}
 }
 GPIO_PinState GPIObase::read(void)	
@@ -79,16 +75,16 @@ Din::Din(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 	*_DDR &= ~(1 << _PIN);
 	//#todo: defult PUPD???
 }
-Din::Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state) : GPIObase(PORT, PIN)
+Din::Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_Pull pull) : GPIObase(PORT, PIN)
 {
 	*_DDR &= ~(1 << _PIN);
-	if (state == GPIO_PIN_SET)	GPIObase::pull_up();
+	if (pull == GPIO_PULL_UP)	GPIObase::pull_up();
 	else GPIObase::pull_down();	
 }
-Din::Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state, gpio_isr_cb cb) : GPIObase(PORT, PIN)
+Din::Din(volatile uint8_t* PORT, uint8_t PIN, GPIO_Pull pull, gpio_isr_cb cb) : GPIObase(PORT, PIN)
 {
 	*_DDR &= ~(1 << _PIN);
-	if (state == GPIO_PIN_SET)	GPIObase::pull_up();
+	if (pull == GPIO_PULL_UP)	GPIObase::pull_up();
 	else GPIObase::pull_down();
 	Din::set_isr_cb(cb);
 }
