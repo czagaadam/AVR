@@ -65,9 +65,11 @@ void GPIObase::pull_down(void)
 {
 	*_PORT &= ~(1 << _PIN);
 }
-uint8_t GPIObase::get_pin(void){
+uint8_t GPIObase::get_pin(void)
+{
 	return _PIN;
 }
+
 Din::Din(){}
 Din::~Din(){Din::ISR_LIST.remove(this);}
 Din::Din(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
@@ -108,6 +110,38 @@ void Din::trigger_pin(uint8_t gpio_pin)
 			Din::ISR_LIST.get(i)->call_isr();		
 		}
 	}
+}
+
+void Din::enable_interrupt(void)
+{
+	if(*_PORT == PORTB)
+	{
+		Din::PORTB_enable_interrupt();
+		PCMSK0 |= (1 << _PIN);
+	}
+	if(*_PORT == PORTC)
+	{
+		Din::PORTC_enable_interrupt();
+		PCMSK1 |= (1 << _PIN);
+	}
+	if(*_PORT == PORTD)
+	{
+		Din::PORTD_enable_interrupt();
+		PCMSK2 |= (1 << _PIN);
+	}
+}
+
+void Din::PORTB_enable_interrupt()
+{
+	PCICR |= (1 << PCIE0);
+}
+void Din::PORTC_enable_interrupt()
+{
+	PCICR |= (1 << PCIE1);
+}
+void Din::PORTD_enable_interrupt()
+{
+	PCICR |= (1 << PCIE2);
 }
 
 Dout::Dout(){}

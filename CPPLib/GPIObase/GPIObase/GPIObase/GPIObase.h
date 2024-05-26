@@ -44,7 +44,7 @@ class GPIObase
 	uint8_t _PIN;
 	volatile uint8_t* _PORT;
 	volatile uint8_t* _DDR;
-	volatile uint8_t* _PINgroup;
+	volatile uint8_t* _PINgroup;	
 	private:
 };
 
@@ -60,8 +60,12 @@ class Din : public GPIObase
 	void set_isr_cb(gpio_isr_cb cb);		//set function pointer
 	void call_isr(void);					//call call back function pointed by function pointer
 	gpio_isr_cb _cb;						//function pointer
+	void enable_interrupt(void);	
 	protected:
 	static ISRbase<Din> ISR_LIST;			//storage for Din objects 
+	static void PORTB_enable_interrupt();
+	static void PORTC_enable_interrupt();
+	static void PORTD_enable_interrupt();	
 	private:
 };
 

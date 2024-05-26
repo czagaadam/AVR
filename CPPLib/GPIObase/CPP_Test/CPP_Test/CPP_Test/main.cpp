@@ -37,13 +37,11 @@ ISR(PCINT0_vect)
 	cli();
 	if (Button1.read() == GPIO_PIN_RESET)
 	{
-		//Din::trigger_pin(PINB0);	//trigger callback
-		Din::trigger_pin(Button1.get_pin());
+		Din::trigger_pin(Button1.get_pin());	//trigger callback
 	}
 	if (Button2.read() == GPIO_PIN_RESET)
 	{		
-		//Din::trigger_pin(PINB1);	//trigger callback
-		Din::trigger_pin(Button2.get_pin());
+		Din::trigger_pin(Button2.get_pin());	//trigger callback
 	}	
 	sei();
 }
@@ -69,6 +67,38 @@ void UART_callback(void)
 	_delay_ms(250);
 	LED7.write(GPIO_PIN_RESET);
 }
+
+int main(void)
+{
+	cli();
+	//#todo: static function
+	//PCICR |= 0b00000001; // Enables Ports B Pin Change Interrupts
+	//PCMSK0 |= 0b00000011; // PCINT0 PCINT1
+	//PCMSK2 |= 0b10000000; // PCINT23	
+	UART = UARTbase(UART0,UART_callback);		
+	UART.init();
+	UART.enable_interrupt();
+	UART.send_string("START");
+	
+	//#todo: check constructor, without write(GPIO_PIN_SET) it is still off
+	LED7 = Dout(&PORTD,PORTD7,GPIO_PIN_SET);
+	LED7.write(GPIO_PIN_SET);//????????????????????????????????????,
+	//LED5 = Dout(&PORTB,PORTB5);
+	Button1 = Din(&PORTB,PORTB0,GPIO_PULL_UP,Button1_callback);
+	Button2 = Din(&PORTB,PORTB1,GPIO_PULL_UP,Button2_callback);
+	Button1.enable_interrupt();
+	Button2.enable_interrupt();
+	sei();
+	
+	LED7.write(GPIO_PIN_SET);
+	_delay_ms(250);
+
+    while (1) 
+    {
+		_delay_ms(1);
+    }
+}
+
 
 typedef void (*func_t)(void);
 
@@ -99,45 +129,4 @@ void call_0x23e()
 
 //call_0x221();
 //call_0x23e();
-
-
-int main(void)
-{
-	cli();
-	//#todo: static function
-	PCICR |= 0b00000001; // Enables Ports B Pin Change Interrupts
-	PCMSK0 |= 0b00000011; // PCINT0 PCINT1
-	//PCMSK2 |= 0b10000000; // PCINT23	
-	UART = UARTbase(UART0,UART_callback);		
-	UART.init();
-	UART.enable_interrupt();
-	UART.send_string("START");
-	sei();
-	//#todo: check constructor, without write(GPIO_PIN_SET) it is still off
-	LED7 = Dout(&PORTD,PORTD7,GPIO_PIN_SET);
-	LED7.write(GPIO_PIN_SET);//????????????????????????????????????,
-	//LED5 = Dout(&PORTB,PORTB5);
-	Button1 = Din(&PORTB,PORTB0,GPIO_PULL_UP,Button1_callback);
-	Button2 = Din(&PORTB,PORTB1,GPIO_PULL_UP,Button2_callback);
-	
-
-	LED7.write(GPIO_PIN_SET);
-	_delay_ms(250);
-	_delay_ms(250);
-	_delay_ms(250);
-	_delay_ms(250);
-	_delay_ms(250);
-	_delay_ms(250);
-	_delay_ms(250);
-	_delay_ms(250);
-		
-
-    while (1) 
-    {
-		_delay_ms(1);
-    }
-}
-
-
-
 
