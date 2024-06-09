@@ -9,10 +9,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "UARTbase.h"
-//#todo: fix include issue, now it is a hard copy
 #include "GPIObase/GPIObase/GPIObase/ISRbase.h"
 #define USART_BAUDRATE 9600
 #define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+#define UNOBOARD 1
+#define MEGABOARD 0
 
 ISRbase<UARTbase> UARTbase::ISR_LIST;
 
@@ -26,7 +27,7 @@ UARTbase::UARTbase(UART_TypeDef PORT)
 UARTbase::UARTbase(UART_TypeDef PORT, uart_isr_cb cb)
 {
 	_PORT = PORT;
-	UARTbase::enable_interrupt();
+	//UARTbase::enable_interrupt();
 	UARTbase::set_isr_cb(cb);
 }
 
@@ -36,34 +37,38 @@ UARTbase::~UARTbase(){
 
 void UARTbase::init(void)
 {
-	if(_PORT == UART0)
-	{
-		// Set baud rate
-		//high 8 bit
-		UBRR0H = (uint8_t)(UBRR_VALUE>>8);
-		//low 8 bit
-		UBRR0L = (uint8_t)UBRR_VALUE;
-		//or UBRR0= UBRR_VALUE;
-		// Set frame format to 8 data bits, no parity, 1 stop bit
-		//UCSR0C |= (1<<UCSZ1)|(1<<UCSZ0);
-		//Default frame format is 8 data bits, no parity, 1 stop bit
-		//enable transmission and reception
-		UCSR0B |= (1<<RXEN0)|(1<<TXEN0);
-	}
+	#ifdef UNOBOARD	
+		if(_PORT == UART0)
+		{
+			// Set baud rate
+			//high 8 bit
+			UBRR0H = (uint8_t)(UBRR_VALUE>>8);
+			//low 8 bit
+			UBRR0L = (uint8_t)UBRR_VALUE;
+			//or UBRR0= UBRR_VALUE;
+			// Set frame format to 8 data bits, no parity, 1 stop bit
+			//UCSR0C |= (1<<UCSZ1)|(1<<UCSZ0);
+			//Default frame format is 8 data bits, no parity, 1 stop bit
+			//enable transmission and reception
+			UCSR0B |= (1<<RXEN0)|(1<<TXEN0);
+		}
+	#endif
 	//#todo:
 }
 
 void UARTbase::send_byte(uint8_t u8Data)
 {
-	if(_PORT == UART0)
-	{
-		//wait while previous byte is completed
-		//checking transmission buffer empty flag UDRE0 in UCSR0A register
-		while(!(UCSR0A&(1<<UDRE0))){};
-		//sending data
-		//UDR0 in USART0 module which is used to send and receive data
-		UDR0 = u8Data;
-	}
+	#ifdef UNOBOARD
+		if(_PORT == UART0)
+		{
+			//wait while previous byte is completed
+			//checking transmission buffer empty flag UDRE0 in UCSR0A register
+			while(!(UCSR0A&(1<<UDRE0))){};
+			//sending data
+			//UDR0 in USART0 module which is used to send and receive data
+			UDR0 = u8Data;
+		}
+	#endif
 	//#todo:
 }
 
@@ -136,29 +141,33 @@ void UARTbase::send_float(float data)
 
 uint8_t UARTbase::receive_byte()
 {
-	if(_PORT == UART0)
-	{
+	#ifdef UNOBOARD
+		if(_PORT == UART0)
+		{
 		// Wait for byte to be received
 		while(!(UCSR0A&(1<<RXC0))){};
 		// Return received data
 		return UDR0;
-	}
-	else
-	{
+		}
+		else
+		{
 		return 0;
-	}
+		}	
+	#endif
 	//#todo:
 }
 
 void UARTbase::enable_interrupt(void)
 {
-	if(_PORT == UART0)
-	{
-		cli();
-		//UCSR0B = ((1<<RXEN0)|(1<<TXEN0)|(1 << RXCIE0));       // Enable receiver and transmitter and Rx interrupt
-		UCSR0B |= ((1 << RXCIE0));       // Rx interrupt
-		sei();
-	}
+	#ifdef UNOBOARD
+		if(_PORT == UART0)
+		{
+			cli();
+			//UCSR0B = ((1<<RXEN0)|(1<<TXEN0)|(1 << RXCIE0));       // Enable receiver and transmitter and Rx interrupt
+			UCSR0B |= ((1 << RXCIE0));       // Rx interrupt
+			sei();
+		}
+	#endif
 	//#todo:
 }
 

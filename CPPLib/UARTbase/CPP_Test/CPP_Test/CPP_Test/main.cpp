@@ -19,8 +19,8 @@
 #include "GPIObase/GPIObase/GPIObase/GPIObase.h"
 #include "UARTbase/UARTbase/UARTbase.h"
 
-Dout LED7;
-Dout LED5;
+Dout LED_B2;
+Dout LED_D7;
 Din Button1;
 Din Button2;
 UARTbase UART;
@@ -28,7 +28,7 @@ UARTbase UART;
 ISR(USART_RX_vect)
 {
 	cli();
-	UART.trigger_port(UART0);
+	UARTbase::trigger_port(UART0);
 	sei();
 }
 
@@ -48,54 +48,55 @@ ISR(PCINT0_vect)
 void Button1_callback(void)
 {
 	UART.send_string("Button1_callback");
-	//LED7.write(GPIO_PIN_SET);
+	//LED_B2.write(GPIO_PIN_SET);
 }
 
 void Button2_callback(void)
 {
 	UART.send_string("Button2_callback");
-	//LED7.write(GPIO_PIN_RESET);
+	//LED_B2.write(GPIO_PIN_RESET);
 }
 
 void UART_callback(void)
 {
-	unsigned char dummy;
+	char dummy;
 	dummy = UDR0;                     // dump the rcvr buffer
 	while (!( UCSR0A & (1<<UDRE0)));  // wait until the register is free
-	LED7.write(GPIO_PIN_SET);
-	_delay_ms(250);
-	_delay_ms(250);
-	LED7.write(GPIO_PIN_RESET);
+	UART.send_string(&dummy);
 }
 
 int main(void)
 {
 	cli();
-	//#todo: static function
-	//PCICR |= 0b00000001; // Enables Ports B Pin Change Interrupts
-	//PCMSK0 |= 0b00000011; // PCINT0 PCINT1
-	//PCMSK2 |= 0b10000000; // PCINT23	
 	UART = UARTbase(UART0,UART_callback);		
 	UART.init();
 	UART.enable_interrupt();
 	UART.send_string("START");
 	
 	//#todo: check constructor, without write(GPIO_PIN_SET) it is still off
-	LED7 = Dout(&PORTD,PORTD7,GPIO_PIN_SET);
-	LED7.write(GPIO_PIN_SET);//????????????????????????????????????,
-	//LED5 = Dout(&PORTB,PORTB5);
+	LED_B2 = Dout(&PORTB,PORTB2,GPIO_PIN_RESET);
+	LED_B2.write(GPIO_PIN_RESET);//????????????????????????????????????,
+	LED_D7 = Dout(&PORTD,PORTD7,GPIO_PIN_RESET);
+	LED_D7.write(GPIO_PIN_RESET);
 	Button1 = Din(&PORTB,PORTB0,GPIO_PULL_UP,Button1_callback);
 	Button2 = Din(&PORTB,PORTB1,GPIO_PULL_UP,Button2_callback);
 	Button1.enable_interrupt();
 	Button2.enable_interrupt();
 	sei();
 	
-	LED7.write(GPIO_PIN_SET);
-	_delay_ms(250);
+	LED_B2.write(GPIO_PIN_SET);
+	_delay_ms(100);
 
     while (1) 
     {
-		_delay_ms(1);
+		LED_B2.write(GPIO_PIN_RESET);
+		LED_D7.write(GPIO_PIN_RESET);
+		//PORTD |= (1 << PINB0);
+		_delay_ms(250);
+		LED_B2.write(GPIO_PIN_SET);
+		LED_D7.write(GPIO_PIN_SET);
+		//PORTD &= ~(1 << PINB0);
+		_delay_ms(250);
     }
 }
 

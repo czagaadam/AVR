@@ -19,6 +19,7 @@ class ISRbase
 	~ISRbase(void)	{
 		//#todo:
 	}
+	//T * needed because passing "this" special pointer to function
 	void add(T * const & obj)
 	{
 		if (Count < MAX_DIN_COUNT) Storage[Count++] = obj;

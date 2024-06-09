@@ -17,21 +17,23 @@ GPIObase::~GPIObase(){
 }	
 void GPIObase::init()
 {
-	if(*_PORT == PORTB)
+	if(_PORT == &PORTB)
 	{
 		_DDR = &DDRB;
 		_PINgroup = &PINB;
 	}
-	if(*_PORT == PORTC)
+	if(_PORT == &PORTC)
 	{
 		_DDR = &DDRC;
 		_PINgroup = &PINC;
 	}
-	if(*_PORT == PORTD)
+	if(_PORT == &PORTD)
 	{
 		_DDR = &DDRD;
 		_PINgroup = &PIND;
 	}
+	/*_DDR = &DDRB;
+	_PINgroup = &PINB;*/
 }
 GPIO_PinState GPIObase::read(void)	
 {
@@ -148,14 +150,28 @@ Dout::Dout(){}
 Dout::~Dout(){
 	//#todo:
 }
+/*Dout::Dout& operator=(const Dout& t)
+{
+	
+	return *this;
+}*/
+//copy constructor but it is not used
+//non-static reference member can't use default assignment operator
+/*Dout::Dout(Dout& t)
+{
+	_PORT = t._PORT;
+	_PIN = t._PIN;
+	_PINgroup = t._PINgroup;
+	_DDR = t._DDR;
+}*/
 Dout::Dout(volatile uint8_t* PORT, uint8_t PIN) : GPIObase(PORT, PIN)
 {
-	*_DDR |= (1 << PIN);
+	*_DDR |= (1 << _PIN);
 	Dout::write(GPIO_PIN_RESET);
 }
 Dout::Dout(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state) : GPIObase(PORT, PIN)
 {
-	*_DDR |= (1 << PIN);
+	*_DDR |= (1 << _PIN);
 	Dout::write(state);
 }
 void Dout::toggle(void){

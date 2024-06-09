@@ -15,19 +15,18 @@
 
 
 
-typedef struct SPI_PORT_0_TypeDef
+typedef const struct SPI0_TypeDef
 {
 	uint8_t MISO	= PORTB4;
 	uint8_t MOSI	= PORTB3;
 	uint8_t SCK		= PORTB5;
 	volatile uint8_t* PORT	= &PORTB;
 	volatile uint8_t* DIRREG_PORT = &DDRB;
-}SPI_PORT_0;
-
+}SPI0;
 
 typedef enum SPI_TypeDef
 {
-	SP0 = 0,
+	SPI_PORT_0 = 0,
 	SPI_PORT_1,
 	SPI_PORT_2
 }SPI_PORT;
@@ -48,7 +47,7 @@ class SPIbase
 	uint8_t SPI_transmit (uint8_t data);
 	uint8_t SPI_transmit (uint8_t data[], uint8_t nbyte);
 	uint8_t SPI_receive (uint8_t data[], uint8_t *receive, uint8_t nbyte);
-	uint8_t SPI_receive (uint8_t& receive);
+	uint8_t SPI_receive (int8_t& receive);
 	uint8_t SPI_write_register (uint8_t command, uint8_t adress, uint8_t data );
 	uint8_t SPI_write_register (uint8_t command, uint8_t data );
 	uint8_t SPI_read_register (uint8_t command, uint8_t adress, uint8_t& receive);
@@ -74,7 +73,7 @@ class SPIbase
 	//volatile uint8_t* _SPI_PORT;
 	//volatile uint8_t* _SPI_DIRREG_PORT;
 	SPI_TypeDef _PORT;
-	SPI_PORT_0 _SPI_PORT_0;
+	SPI0 _SPI0;
 	static ISRbase<SPIbase> ISR_LIST;		//storage for SPI objects
 	SPI_SPEED _speed;
 	private:
@@ -85,21 +84,12 @@ class SPIMaster: public SPIbase
 {
 	public:
 	SPIMaster ();
-	//SPIMaster (SPI_PORT SPI, Dout& CS, SPI_SPEED speed);
-	//SPIMaster (SPI_PORT SPI, Dout& CS, SPI_SPEED speed, spi_isr_cb cb);	
-	SPIMaster (SPI_PORT SPI, Dout* CS, SPI_SPEED speed);
-	SPIMaster (SPI_PORT SPI, Dout* CS, SPI_SPEED speed, spi_isr_cb cb);
+	SPIMaster (SPI_PORT SPI, SPI_SPEED speed);
+	SPIMaster (SPI_PORT SPI, SPI_SPEED speed, spi_isr_cb cb);
 	~SPIMaster (void);
 	void SPI_init_master (void);
-	//void SPI_init_master_interrupt (void);
-	//void SPI_init_master_high_speed (void);
-	void SPI_CS_enable (void);
-	void SPI_CS_disable (void);
-
-	//non-static reference member can't use default assignment operator
-	//Dout& _CS;
-	Dout* _CS;	
-	
+	void SPI_init_master_interrupt (void);
+	void SPI_init_master_high_speed (void);
 	protected:
 	
 	private:
@@ -110,12 +100,14 @@ class SPISlave: public SPIbase
 {
 	public:
 	SPISlave ();
-	SPISlave (SPI_PORT SPI, SPI_SPEED speed);
-	SPISlave (SPI_PORT SPI, SPI_SPEED speed, spi_isr_cb cb);	
+	SPISlave (SPI_PORT SPI, Dout& CS, SPI_SPEED speed);
+	SPISlave (SPI_PORT SPI, Dout& CS, SPI_SPEED speed, spi_isr_cb cb);
 	~SPISlave (void);
 	void SPI_init_slave (void);	
+	void SPI_CS_enable (void);
+	void SPI_CS_disable (void);	
 	protected:
-		
+	Dout& _CS;	
 	private:
 		
 };

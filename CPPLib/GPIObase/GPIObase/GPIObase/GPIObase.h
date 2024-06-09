@@ -73,6 +73,9 @@ class Dout : public GPIObase
 {
 	public:
 	Dout();
+	//copy constructor but it is not used
+	//non-static reference member can't use default assignment operator
+	//Dout(Dout& t);
 	Dout(volatile uint8_t* PORT, uint8_t PIN);
 	Dout(volatile uint8_t* PORT, uint8_t PIN, GPIO_PinState state);
 	~Dout();
