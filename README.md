@@ -16,3 +16,4 @@ https://github.com/czagaadam/AVR/blob/main/CPPLib/GPIObase/CPP_Test/CPP_Test/CPP
 
 SPI class is uploded, find here an example how to use the SPI class for MCP3201 ADC device:
 https://github.com/czagaadam/AVR/blob/main/CPPLib/SPIbase/CPP_SPI_test/CPP_SPI_test/CPP_SPI_test/main.cpp
+![measgif](https://github.com/czagaadam/AVR/assets/168843740/f2756b25-c6fe-431f-8308-196eab5dd641)
