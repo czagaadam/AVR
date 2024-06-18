@@ -1,8 +1,10 @@
 /*
  * MCP3201.h
  *
- * Created: 2024. 06. 07. 13:39:24
- *  Author: acer1
+ *  Author: Adam Czaga czagaadam@gmail.com
+ *
+ *  MCP3201 ADC class
+ *
  */ 
 
 
@@ -14,10 +16,8 @@
 #define F_CPU 16000000UL        //16Mhz
 #include <avr/interrupt.h>
 #include <util/atomic.h>
-#include <util/delay.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <stdint.h>       // needed for uint8_t
 #include <stdio.h>
 #include <string.h>
 #include "GPIObase/GPIObase/GPIObase/GPIObase.h"
@@ -32,7 +32,7 @@ class MCP3201_ADC
 	
 	
 	
-	uint16_t read_adc(void);
+	uint8_t read_adc(uint16_t& ADCVal);
 	
 	float convert_to_float(uint16_t ADCVal);
 	

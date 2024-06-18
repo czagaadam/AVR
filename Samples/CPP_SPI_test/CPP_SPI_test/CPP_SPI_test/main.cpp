@@ -5,17 +5,7 @@
  * Author : acer1
  */ 
 
-#include <avr/pgmspace.h>
-#include <avr/io.h>
-#define F_CPU 16000000UL        //16Mhz
-#include <avr/interrupt.h>
-#include <util/atomic.h>
 #include <util/delay.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdint.h>       // needed for uint8_t
-#include <stdio.h>
-#include <string.h>
 #include "GPIObase/GPIObase/GPIObase/GPIObase.h"
 #include "UARTbase/UARTbase/UARTbase.h"
 #include "SPIbase/SPIbase/SPIbase/SPIbase.h"
@@ -24,11 +14,8 @@
 SPIMaster SPI;
 UARTbase UART;
 MCP3201_ADC MCP3201;
-//Dout MOSI;
-//Dout SCK;
 Dout CS;
 Dout LED7;
-//Din MISO;
 
 ISR(USART_RX_vect)
 {
@@ -81,12 +68,10 @@ int main(void)
 	
 	sei();
 	_delay_ms(250);
-	//CS.write(GPIO_PIN_SET);
 	while (1)
 	{
 		_delay_ms(250);_delay_ms(250);
 		LED7.write(GPIO_PIN_SET);
-		//UART.send_string("READ:");
 		char buffer[50] = "";
 		MCP3201.read(buffer);
 		UART.send_string(buffer);

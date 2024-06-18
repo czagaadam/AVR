@@ -1,8 +1,10 @@
 /*
  * UARTbase.h
  *
- * Created: 2024. 05. 07. 15:03:56
- *  Author: acer1
+ *  Author: Adam Czaga czagaadam@gmail.com
+ *
+ *  UART base class
+ *
  */ 
 
 

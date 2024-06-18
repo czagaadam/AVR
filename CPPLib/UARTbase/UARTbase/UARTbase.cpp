@@ -1,11 +1,18 @@
+/*
+ * UARTbase.cpp
+ *
+ *  Author: Adam Czaga czagaadam@gmail.com
+ *
+ *  UART base class
+ *
+ */ 
+
 #include <avr/pgmspace.h>
 #include <avr/io.h>
-#define F_CPU 16000000UL        //16Mhz
-#include <util/delay.h>
-#include <avr/interrupt.h>
+#define F_CPU 16000000UL    //16Mhz
+#include <avr/interrupt.h>	//cli sei
 #include <stdbool.h>
 #include <stdlib.h>
-#include <stdint.h>       // needed for uint8_t
 #include <stdio.h>
 #include <string.h>
 #include "UARTbase.h"

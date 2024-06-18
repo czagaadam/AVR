@@ -1,4 +1,11 @@
-
+/*
+ * GPIObase.cpp
+ *
+ *  Author: Adam Czaga czagaadam@gmail.com
+ *
+ *  GPIO parent class and Din,Dout inherited classes
+ *
+ */ 
 
 #include "GPIObase.h"
 #include "ISRbase.h"
@@ -37,7 +44,7 @@ void GPIObase::init()
 }
 GPIO_PinState GPIObase::read(void)	
 {
-	//#todo:
+	//#todo: check and implement for other ports
 	//if(!(PINB & (1 << PORTB0))) return 0; else return 1;
 	
 	//if ( ( ( (*_PINgroup) & ( 1 << _PIN ) ) >> _PIN ) == 0 ) return 0;  else return 1;
@@ -47,6 +54,7 @@ GPIO_PinState GPIObase::read(void)
 	{
 		if ( ( ( (PINB) & ( 1 << _PIN ) ) >> _PIN ) == 0 ) return GPIO_PIN_RESET;  else return GPIO_PIN_SET;
 	}
+	//#todo: else
 	/*if(*_PORT == PORTC)
 	{
 		DDRC &= ~(1 << _PIN);

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "CPP_Test", "CPP_Test\CPP_Test.cppproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "CPP_GPIO_Test", "CPP_Test\CPP_GPIO_Test.cppproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 EndProject
 Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "GPIObase", "..\..\CPPLib\GPIObase\GPIObase\GPIObase\GPIObase.cppproj", "{0B763004-E4F3-4C4B-9891-D8FA97877521}"
 EndProject
