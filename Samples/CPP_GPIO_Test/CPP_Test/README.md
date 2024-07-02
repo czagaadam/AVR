@@ -11,3 +11,8 @@
 
 3. Open the properties of your startup project and set the include path of the GPIO library in the Toolchain/C++ compiler section
 ![image](https://github.com/czagaadam/AVR/assets/168843740/624e0b33-f9f0-4663-bd63-75220356cc85)
+
+4. If you add libraries to your solution there's no need to add libraries Toolchain/GNU linker/Libraries section
+
+5. Include GPIO library to the main.cpp file
+![image](https://github.com/czagaadam/AVR/assets/168843740/def1f08c-c31a-4b5b-8c98-c967a74ba67c)
