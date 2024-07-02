@@ -1,18 +1,12 @@
-# AVR
+# HOW TO USE GPIO LIBRARY
 
-Welcome to AVR wiki!
+1. Add GPIO base library to your workspace (solution in Micropchip studio)
+![image](https://github.com/czagaadam/AVR/assets/168843740/c52632ef-8acf-412d-895a-12b3651c5654)
 
-The purpose of this repo. to implement and share a C++ based library collection for 8bit AVR microcontroller (ATMEG328P), like in this STM32 tutorial: 
-https://www.youtube.com/@BinderTronics 
-![Blinder Tronics](https://github.com/czagaadam/AVR/assets/168843740/114b1e23-fb55-4a1d-800c-d7a991865da5)
-I have written lot's of code during the years in C with Microchip Studio(Atmel Studio) IDE but I was always curious, 
-can I implement the same library structure in C++ and can I simply write lines like: Button1.read() or Led1.On()... I hope so.
-I'm familier with other OOP languges and OOP principle but not with C++, so implementing and sharing these codes is also a self learning activities.
+2. Add library to your main startup project
+![image](https://github.com/czagaadam/AVR/assets/168843740/db3f74a5-1c0a-4125-9a89-3bf22c0a0158)
 
-Please see here examples:
+![image](https://github.com/czagaadam/AVR/assets/168843740/2301342f-b775-4559-90b0-a528c3b7ad38)
 
-How to use GPIO and UART libraries and ISR template to store GPIO and UART callback routines addresses:
-https://github.com/czagaadam/AVR/tree/main/Samples/CPP_GPIO_Test/CPP_Test
-
-SPI class is uploded, find here an example how to use the SPI class for MCP3201 ADC device:
-https://github.com/czagaadam/AVR/tree/main/Samples/CPP_SPI_test/CPP_SPI_test
+3. Open the properties of your startup project and set the include path of the GPIO library in the Toolchain/C++ compiler section
+![image](https://github.com/czagaadam/AVR/assets/168843740/624e0b33-f9f0-4663-bd63-75220356cc85)
