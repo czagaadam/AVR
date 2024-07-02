@@ -15,4 +15,5 @@
 4. If you add libraries to your solution there's no need to add libraries Toolchain/GNU linker/Libraries section
 
 5. Include GPIO library to the main.cpp file
+
 ![image](https://github.com/czagaadam/AVR/assets/168843740/def1f08c-c31a-4b5b-8c98-c967a74ba67c)
