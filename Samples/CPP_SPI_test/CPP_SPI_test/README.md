@@ -17,4 +17,5 @@
 
 5. Include SPI library to the main.cpp file
 
-![image](https://github.com/czagaadam/AVR/assets/168843740/def1f08c-c31a-4b5b-8c98-c967a74ba67c)
+![image](https://github.com/czagaadam/AVR/assets/168843740/c3fe94bf-009e-4362-a322-fc03363c25af)
+
